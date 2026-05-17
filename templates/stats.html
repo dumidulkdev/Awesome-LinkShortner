@@ -50,7 +50,7 @@
 
 {% block scripts %}
 <script>
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (!token) window.location.href = '/login';
 
     const linkId = window.location.pathname.split('/').pop();

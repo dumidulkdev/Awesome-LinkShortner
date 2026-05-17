@@ -32,20 +32,25 @@
     </main>
 
     <script>
-        const token = localStorage.getItem('token');
-        const navLinks = document.getElementById('nav-links');
-
-        if (token) {
-            navLinks.innerHTML = `
-                <a href="/dashboard" class="px-4 py-2 text-gray-300 hover:text-white">Dashboard</a>
-                <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700">Logout</button>
-            `;
-        } else {
-            navLinks.innerHTML = `
-                <a href="/login" class="px-4 py-2 text-gray-300 hover:text-white">Login</a>
-                <a href="/register" class="px-4 py-2 bg-primary rounded-lg hover:bg-indigo-600">Sign Up</a>
-            `;
+        function getToken() {
+            return localStorage.getItem('token');
         }
+
+        (function() {
+            const navLinks = document.getElementById('nav-links');
+
+            if (getToken()) {
+                navLinks.innerHTML = `
+                    <a href="/dashboard" class="px-4 py-2 text-gray-300 hover:text-white">Dashboard</a>
+                    <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700">Logout</button>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/login" class="px-4 py-2 text-gray-300 hover:text-white">Login</a>
+                    <a href="/register" class="px-4 py-2 bg-primary rounded-lg hover:bg-indigo-600">Sign Up</a>
+                `;
+            }
+        })();
 
         function logout() {
             localStorage.removeItem('token');
