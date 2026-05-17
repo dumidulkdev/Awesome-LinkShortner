@@ -32,7 +32,9 @@ async fn main() {
     let config = Config::from_env();
     let pool = db::create_pool(&config.database_url).await;
 
-    sqlx::raw_sql(include_str!("../migrations/001_initial.sql"))
+    let migration_sql = std::fs::read_to_string("migrations/001_initial.sql")
+        .expect("Failed to read migration file");
+    sqlx::raw_sql(&migration_sql)
         .execute(&pool)
         .await
         .expect("Failed to run migrations");
