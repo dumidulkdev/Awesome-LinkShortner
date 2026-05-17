@@ -9,10 +9,11 @@ use crate::utils::shortcode;
 use crate::AppState;
 
 fn to_response(link: &Link, base_url: &str) -> LinkResponse {
+    let base = base_url.trim_end_matches('/');
     LinkResponse {
         id: link.id,
         short_code: link.short_code.clone(),
-        short_url: format!("{}/{}", base_url, link.short_code),
+        short_url: format!("{}/{}", base, link.short_code),
         original_url: link.original_url.clone(),
         title: link.title.clone(),
         click_count: link.click_count.unwrap_or(0),
