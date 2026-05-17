@@ -15,6 +15,7 @@ mod models;
 mod utils;
 
 use config::Config;
+use middleware::rate_limit::RateLimiter;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -42,6 +43,8 @@ async fn main() {
         db: pool,
         config: config.clone(),
     };
+
+    let _rate_limiter = RateLimiter::new(100, 60);
 
     let api_routes = Router::new()
         .route("/auth/register", post(handlers::auth::register))
