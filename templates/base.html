@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LinkShort{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        dark: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark min-h-screen text-white">
+    <nav class="border-b border-gray-800 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-2xl font-bold text-primary">LinkShort</a>
+            <div id="nav-links" class="flex gap-4">
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const navLinks = document.getElementById('nav-links');
+
+        if (token) {
+            navLinks.innerHTML = `
+                <a href="/dashboard" class="px-4 py-2 text-gray-300 hover:text-white">Dashboard</a>
+                <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700">Logout</button>
+            `;
+        } else {
+            navLinks.innerHTML = `
+                <a href="/login" class="px-4 py-2 text-gray-300 hover:text-white">Login</a>
+                <a href="/register" class="px-4 py-2 bg-primary rounded-lg hover:bg-indigo-600">Sign Up</a>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('email');
+            window.location.href = '/';
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

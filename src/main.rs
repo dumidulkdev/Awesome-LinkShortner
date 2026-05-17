@@ -52,6 +52,11 @@ async fn main() {
         .route("/links/{id}/stats", get(handlers::stats::get_stats));
 
     let app = Router::new()
+        .route("/", get(handlers::pages::index))
+        .route("/login", get(handlers::pages::login_page))
+        .route("/register", get(handlers::pages::register_page))
+        .route("/dashboard", get(handlers::pages::dashboard_page))
+        .route("/stats/{id}", get(handlers::pages::stats_page))
         .nest("/api", api_routes)
         .route("/{code}", get(handlers::redirect::redirect))
         .layer(CorsLayer::permissive())

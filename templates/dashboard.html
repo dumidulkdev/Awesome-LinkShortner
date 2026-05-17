@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - LinkShort{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold">Dashboard</h1>
+        <button onclick="openCreateModal()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-indigo-600 transition">
+            + New Link
+        </button>
+    </div>
+
+    <div id="create-modal" class="hidden bg-gray-900 rounded-2xl p-6 border border-gray-800">
+        <h3 class="text-xl font-semibold mb-4">Create Short Link</h3>
+        <div class="space-y-3">
+            <input type="url" id="new-url" placeholder="https://example.com/your-long-url" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+            <input type="text" id="new-custom-code" placeholder="Custom code (optional)" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+            <input type="text" id="new-title" placeholder="Title (optional)" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+            <div class="flex gap-3">
+                <button onclick="createLink()" class="px-6 py-2 bg-primary rounded-lg hover:bg-indigo-600 transition">Create</button>
+                <button onclick="closeCreateModal()" class="px-6 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+            </div>
+        </div>
+        <div id="create-error" class="hidden mt-3 p-3 bg-red-900/30 border border-red-800 rounded-lg text-red-400 text-sm"></div>
+    </div>
+
+    <div id="links-loading" class="text-center text-gray-400 py-12">Loading your links...</div>
+
+    <div id="links-empty" class="hidden text-center py-12">
+        <p class="text-gray-400 text-lg">No links yet. Create your first short link!</p>
+    </div>
+
+    <div id="links-table" class="hidden">
+        <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-800 text-gray-400 text-sm">
+                        <th class="text-left px-6 py-4">Short URL</th>
+                        <th class="text-left px-6 py-4">Original URL</th>
+                        <th class="text-left px-6 py-4">Clicks</th>
+                        <th class="text-left px-6 py-4">Created</th>
+                        <th class="text-left px-6 py-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="links-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/login';
+
+    loadLinks();
+
+    async function loadLinks() {
+        try {
+            const res = await fetch('/api/links', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.status === 401) {
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+                return;
+            }
+
+            const links = await res.json();
+            document.getElementById('links-loading').classList.add('hidden');
+
+            if (links.length === 0) {
+                document.getElementById('links-empty').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('links-table').classList.remove('hidden');
+            const tbody = document.getElementById('links-body');
+            tbody.innerHTML = links.map(link => `
+                <tr class="border-b border-gray-800 hover:bg-gray-800/50">
+                    <td class="px-6 py-4">
+                        <a href="/${link.short_code}" target="_blank" class="text-primary hover:underline font-mono">${link.short_code}</a>
+                    </td>
+                    <td class="px-6 py-4 text-gray-300 max-w-xs truncate">${link.original_url}</td>
+                    <td class="px-6 py-4">
+                        <a href="/stats/${link.id}" class="text-primary hover:underline">${link.click_count}</a>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400 text-sm">${new Date(link.created_at).toLocaleDateString()}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                            <button onclick="copyLink('${link.short_url}')" class="px-3 py-1 bg-gray-700 rounded text-sm hover:bg-gray-600">Copy</button>
+                            <button onclick="deleteLink('${link.id}')" class="px-3 py-1 bg-red-700 rounded text-sm hover:bg-red-600">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            document.getElementById('links-loading').textContent = 'Failed to load links';
+        }
+    }
+
+    function openCreateModal() {
+        document.getElementById('create-modal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+        document.getElementById('create-modal').classList.add('hidden');
+        document.getElementById('create-error').classList.add('hidden');
+    }
+
+    async function createLink() {
+        const url = document.getElementById('new-url').value.trim();
+        const customCode = document.getElementById('new-custom-code').value.trim();
+        const title = document.getElementById('new-title').value.trim();
+        const errorDiv = document.getElementById('create-error');
+        errorDiv.classList.add('hidden');
+
+        const body = { url };
+        if (customCode) body.custom_code = customCode;
+        if (title) body.title = title;
+
+        try {
+            const res = await fetch('/api/links', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                errorDiv.textContent = data.error;
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            closeCreateModal();
+            document.getElementById('new-url').value = '';
+            document.getElementById('new-custom-code').value = '';
+            document.getElementById('new-title').value = '';
+            loadLinks();
+        } catch (e) {
+            errorDiv.textContent = 'Network error';
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    async function deleteLink(id) {
+        if (!confirm('Delete this link?')) return;
+
+        await fetch(`/api/links/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        loadLinks();
+    }
+
+    function copyLink(url) {
+        navigator.clipboard.writeText(url);
+    }
+</script>
+{% endblock %}
