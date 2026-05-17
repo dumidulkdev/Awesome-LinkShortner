@@ -58,8 +58,7 @@ pub async fn create_link(
     )
     .await?;
 
-    let base_url = format!("http://{}:{}", state.config.host, state.config.port);
-    Ok(Json(to_response(&link, &base_url)))
+    Ok(Json(to_response(&link, &state.config.base_url)))
 }
 
 pub async fn list_links(
@@ -67,7 +66,7 @@ pub async fn list_links(
     auth: AuthUser,
 ) -> Result<Json<Vec<LinkResponse>>, AppError> {
     let links = Link::find_by_user(&state.db, auth.user_id).await?;
-    let base_url = format!("http://{}:{}", state.config.host, state.config.port);
+    let base_url = &state.config.base_url;
     let responses: Vec<LinkResponse> = links
         .iter()
         .map(|l| to_response(l, &base_url))
