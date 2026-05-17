@@ -4,32 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}LinkShort{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
-                extend: {
-                    colors: {
-                        primary: '#6366f1',
-                        dark: '#0f172a',
-                    }
-                }
+                fontFamily: {
+                    sans: ['Poppins', 'sans-serif'],
+                    mono: ['JetBrains Mono', 'monospace'],
+                },
+                extend: {}
             }
         }
     </script>
+    <style>
+        * { -webkit-font-smoothing: antialiased; }
+        ::selection { background: #000; color: #fff; }
+        input:focus { outline: none; }
+    </style>
 </head>
-<body class="bg-dark min-h-screen text-white">
-    <nav class="border-b border-gray-800 px-6 py-4">
-        <div class="max-w-6xl mx-auto flex items-center justify-between">
-            <a href="/" class="text-2xl font-bold text-primary">LinkShort</a>
-            <div id="nav-links" class="flex gap-4">
-            </div>
+<body class="bg-white min-h-screen text-neutral-900 font-sans">
+
+    <nav class="border-b border-neutral-200 px-6 py-5">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-lg font-semibold tracking-tight">linkshort</a>
+            <div id="nav-links" class="flex items-center gap-6 text-sm"></div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-8">
+    <main class="max-w-5xl mx-auto px-6 py-10">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="border-t border-neutral-200 px-6 py-6 mt-20">
+        <div class="max-w-5xl mx-auto text-xs text-neutral-400">
+            linkshort &mdash; built with rust
+        </div>
+    </footer>
 
     <script>
         function getToken() {
@@ -37,17 +50,17 @@
         }
 
         (function() {
-            const navLinks = document.getElementById('nav-links');
+            const nav = document.getElementById('nav-links');
 
             if (getToken()) {
-                navLinks.innerHTML = `
-                    <a href="/dashboard" class="px-4 py-2 text-gray-300 hover:text-white">Dashboard</a>
-                    <button onclick="logout()" class="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700">Logout</button>
+                nav.innerHTML = `
+                    <a href="/dashboard" class="text-neutral-500 hover:text-neutral-900 transition-colors">dashboard</a>
+                    <button onclick="logout()" class="text-neutral-500 hover:text-neutral-900 transition-colors">logout</button>
                 `;
             } else {
-                navLinks.innerHTML = `
-                    <a href="/login" class="px-4 py-2 text-gray-300 hover:text-white">Login</a>
-                    <a href="/register" class="px-4 py-2 bg-primary rounded-lg hover:bg-indigo-600">Sign Up</a>
+                nav.innerHTML = `
+                    <a href="/login" class="text-neutral-500 hover:text-neutral-900 transition-colors">login</a>
+                    <a href="/register" class="border border-neutral-900 px-4 py-1.5 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors">sign up</a>
                 `;
             }
         })();

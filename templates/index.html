@@ -1,60 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}LinkShort - Shorten Your URLs{% endblock %}
+{% block title %}LinkShort &mdash; URL Shortener{% endblock %}
 
 {% block content %}
-<div class="flex flex-col items-center justify-center min-h-[70vh]">
-    <h1 class="text-5xl font-bold mb-4 text-center">
-        Shorten Your URLs <span class="text-primary">Instantly</span>
-    </h1>
-    <p class="text-gray-400 text-xl mb-8 text-center max-w-2xl">
-        Fast, reliable URL shortening with click analytics. Track every click in real time.
-    </p>
+<div class="mt-20 mb-32">
+    <div class="max-w-xl">
+        <h1 class="text-4xl font-bold tracking-tight leading-tight mb-4">
+            Shorten links,<br>track clicks.
+        </h1>
+        <p class="text-neutral-500 text-lg mb-10 leading-relaxed">
+            Paste a URL, get a short link. See who clicks it, when, and from where. No fluff.
+        </p>
+    </div>
 
-    <div class="w-full max-w-2xl bg-gray-900 rounded-2xl p-6 border border-gray-800">
-        <div class="flex gap-3">
+    <div class="max-w-2xl">
+        <div class="flex gap-3 items-stretch">
             <input
                 type="url"
                 id="url-input"
-                placeholder="Paste your long URL here..."
-                class="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary"
+                placeholder="https://your-long-url.com/something"
+                class="flex-1 px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors"
             >
             <button
                 onclick="shortenUrl()"
-                class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-indigo-600 transition"
+                class="px-6 py-3 bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors shrink-0"
             >
                 Shorten
             </button>
         </div>
 
-        <div id="result" class="hidden mt-4 p-4 bg-gray-800 rounded-lg">
-            <p class="text-gray-400 text-sm mb-1">Your shortened URL:</p>
-            <div class="flex items-center gap-3">
-                <a id="short-url" href="#" target="_blank" class="text-primary text-lg font-mono hover:underline"></a>
-                <button onclick="copyUrl()" class="px-3 py-1 bg-gray-700 rounded text-sm hover:bg-gray-600 transition">
-                    Copy
+        <div id="result" class="hidden mt-4 py-4 border-t border-neutral-200">
+            <span class="text-xs text-neutral-400 uppercase tracking-wider">Your link</span>
+            <div class="flex items-center gap-4 mt-2">
+                <a id="short-url" href="#" target="_blank" class="text-neutral-900 font-mono text-sm hover:underline underline-offset-4"></a>
+                <button onclick="copyUrl()" class="text-xs text-neutral-500 hover:text-neutral-900 border border-neutral-300 px-3 py-1 transition-colors">
+                    copy
                 </button>
             </div>
         </div>
 
-        <div id="error" class="hidden mt-4 p-4 bg-red-900/30 border border-red-800 rounded-lg text-red-400"></div>
+        <div id="error" class="hidden mt-4 py-3 text-sm text-red-600"></div>
     </div>
+</div>
 
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
-        <div class="text-center p-6">
-            <div class="text-4xl mb-3">⚡</div>
-            <h3 class="text-lg font-semibold mb-2">Lightning Fast</h3>
-            <p class="text-gray-400">Built with Rust for blazing fast redirects under 10ms</p>
+<div class="border-t border-neutral-200 pt-16 pb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div>
+            <h3 class="text-sm font-semibold mb-2">Fast redirects</h3>
+            <p class="text-sm text-neutral-500 leading-relaxed">Built on Rust. Redirects happen in single-digit milliseconds, even under heavy load.</p>
         </div>
-        <div class="text-center p-6">
-            <div class="text-4xl mb-3">📊</div>
-            <h3 class="text-lg font-semibold mb-2">Click Analytics</h3>
-            <p class="text-gray-400">Track clicks, referrers, and visitor details in real time</p>
+        <div>
+            <h3 class="text-sm font-semibold mb-2">Click analytics</h3>
+            <p class="text-sm text-neutral-500 leading-relaxed">Every click is logged with timestamp, referrer, and user agent. See it all on your dashboard.</p>
         </div>
-        <div class="text-center p-6">
-            <div class="text-4xl mb-3">🔗</div>
-            <h3 class="text-lg font-semibold mb-2">Custom Aliases</h3>
-            <p class="text-gray-400">Create memorable custom short codes for your links</p>
+        <div>
+            <h3 class="text-sm font-semibold mb-2">Custom codes</h3>
+            <p class="text-sm text-neutral-500 leading-relaxed">Pick your own short codes for branded links, or let us generate one for you.</p>
         </div>
     </div>
 </div>
@@ -72,14 +73,14 @@
         errorDiv.classList.add('hidden');
 
         if (!url) {
-            errorDiv.textContent = 'Please enter a URL';
+            errorDiv.textContent = 'Enter a URL first.';
             errorDiv.classList.remove('hidden');
             return;
         }
 
-        const token = localStorage.getItem('token');
+        const token = getToken();
         if (!token) {
-            errorDiv.textContent = 'Please login or register to shorten URLs';
+            errorDiv.innerHTML = 'You need to <a href="/login" class="underline">log in</a> first.';
             errorDiv.classList.remove('hidden');
             return;
         }
@@ -97,7 +98,7 @@
             const data = await res.json();
 
             if (!res.ok) {
-                errorDiv.textContent = data.error || 'Something went wrong';
+                errorDiv.textContent = data.error || 'Something went wrong.';
                 errorDiv.classList.remove('hidden');
                 return;
             }
@@ -106,7 +107,7 @@
             shortUrlEl.href = data.short_url;
             resultDiv.classList.remove('hidden');
         } catch (e) {
-            errorDiv.textContent = 'Network error. Please try again.';
+            errorDiv.textContent = 'Network error. Try again.';
             errorDiv.classList.remove('hidden');
         }
     }
