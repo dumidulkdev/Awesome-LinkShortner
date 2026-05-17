@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::errors::AppError;
+use crate::AppState;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -47,10 +48,10 @@ pub struct AuthUser {
     pub email: String,
 }
 
-impl<S: Send + Sync> FromRequestParts<S> for AuthUser {
+impl FromRequestParts<AppState> for AuthUser {
     type Rejection = AppError;
 
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+    async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, Self::Rejection> {
         let auth_header = parts
             .headers
             .get("Authorization")
@@ -61,12 +62,7 @@ impl<S: Send + Sync> FromRequestParts<S> for AuthUser {
             .strip_prefix("Bearer ")
             .ok_or_else(|| AppError::Unauthorized("Invalid authorization format".to_string()))?;
 
-        let jwt_secret = parts
-            .extensions
-            .get::<String>()
-            .ok_or_else(|| AppError::Internal("JWT secret not configured".to_string()))?;
-
-        let claims = verify_token(token, jwt_secret)
+        let claims = verify_token(token, &state.config.jwt_secret)
             .map_err(|_| AppError::Unauthorized("Invalid token".to_string()))?;
 
         Ok(AuthUser {

@@ -1,20 +1,20 @@
 use axum::extract::{ConnectInfo, Path, State};
 use axum::http::HeaderMap;
 use axum::response::Redirect;
-use sqlx::PgPool;
 use std::net::SocketAddr;
 
 use crate::errors::AppError;
 use crate::models::click::Click;
 use crate::models::link::Link;
+use crate::AppState;
 
 pub async fn redirect(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(code): Path<String>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     headers: HeaderMap,
 ) -> Result<Redirect, AppError> {
-    let link = Link::find_by_code(&pool, &code)
+    let link = Link::find_by_code(&state.db, &code)
         .await?
         .ok_or_else(|| AppError::NotFound("Link not found".to_string()))?;
 
@@ -34,18 +34,18 @@ pub async fn redirect(
         .and_then(|v| v.to_str().ok())
         .map(|s| s.to_string());
 
-    let pool_clone = pool.clone();
+    let db = state.db.clone();
     let link_id = link.id;
     tokio::spawn(async move {
         let _ = Click::create(
-            &pool_clone,
+            &db,
             link_id,
             Some(&ip),
             user_agent.as_deref(),
             referer.as_deref(),
         )
         .await;
-        let _ = Link::increment_clicks(&pool_clone, link_id).await;
+        let _ = Link::increment_clicks(&db, link_id).await;
     });
 
     Ok(Redirect::temporary(&link.original_url))
