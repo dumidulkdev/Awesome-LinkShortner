@@ -27,18 +27,18 @@
 </head>
 <body class="bg-white min-h-screen text-neutral-900 font-sans">
 
-    <nav class="border-b border-neutral-200 px-6 py-5">
+    <nav class="border-b border-neutral-200 px-4 sm:px-6 py-4 sm:py-5">
         <div class="max-w-5xl mx-auto flex items-center justify-between">
             <a href="/" class="text-lg font-semibold tracking-tight">linkshort</a>
-            <div id="nav-links" class="flex items-center gap-6 text-sm"></div>
+            <div id="nav-links" class="flex items-center gap-4 sm:gap-6 text-sm"></div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-6 py-10">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-neutral-200 px-6 py-6 mt-20">
+    <footer class="border-t border-neutral-200 px-4 sm:px-6 py-6 mt-12 sm:mt-20">
         <div class="max-w-5xl mx-auto text-xs text-neutral-400">
             linkshort &mdash; built with rust
         </div>
@@ -60,7 +60,7 @@
             } else {
                 nav.innerHTML = `
                     <a href="/login" class="text-neutral-500 hover:text-neutral-900 transition-colors">login</a>
-                    <a href="/register" class="border border-neutral-900 px-4 py-1.5 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors">sign up</a>
+                    <a href="/register" class="border border-neutral-900 px-3 sm:px-4 py-1.5 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors text-sm">sign up</a>
                 `;
             }
         })();

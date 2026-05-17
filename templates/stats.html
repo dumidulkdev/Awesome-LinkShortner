@@ -3,27 +3,27 @@
 {% block title %}Stats &mdash; LinkShort{% endblock %}
 
 {% block content %}
-<div class="space-y-10">
+<div class="space-y-8 sm:space-y-10">
     <div class="flex items-center gap-4">
         <a href="/dashboard" class="text-sm text-neutral-400 hover:text-neutral-900 transition-colors">&larr; back</a>
-        <h1 class="text-2xl font-bold tracking-tight">Analytics</h1>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Analytics</h1>
     </div>
 
     <div id="stats-loading" class="text-sm text-neutral-400 py-16 text-center">Loading...</div>
 
-    <div id="stats-content" class="hidden space-y-10">
-        <div class="grid grid-cols-3 gap-px bg-neutral-200 border border-neutral-200">
-            <div class="bg-white p-6">
+    <div id="stats-content" class="hidden space-y-8 sm:space-y-10">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-neutral-200 border border-neutral-200">
+            <div class="bg-white p-5 sm:p-6">
                 <span class="text-xs text-neutral-500 uppercase tracking-wider">Total clicks</span>
-                <p id="total-clicks" class="text-3xl font-bold tabular-nums mt-2">0</p>
+                <p id="total-clicks" class="text-2xl sm:text-3xl font-bold tabular-nums mt-2">0</p>
             </div>
-            <div class="bg-white p-6">
+            <div class="bg-white p-5 sm:p-6">
                 <span class="text-xs text-neutral-500 uppercase tracking-wider">Today</span>
-                <p id="today-clicks" class="text-3xl font-bold tabular-nums mt-2">0</p>
+                <p id="today-clicks" class="text-2xl sm:text-3xl font-bold tabular-nums mt-2">0</p>
             </div>
-            <div class="bg-white p-6">
+            <div class="bg-white p-5 sm:p-6">
                 <span class="text-xs text-neutral-500 uppercase tracking-wider">Last 7 days</span>
-                <p id="week-clicks" class="text-3xl font-bold tabular-nums mt-2">0</p>
+                <p id="week-clicks" class="text-2xl sm:text-3xl font-bold tabular-nums mt-2">0</p>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
             <div id="clicks-empty" class="hidden text-sm text-neutral-400 py-8">No clicks yet.</div>
 
             <div id="clicks-table" class="hidden">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm hidden sm:table">
                     <thead>
                         <tr class="border-b border-neutral-200 text-neutral-500 text-xs uppercase tracking-wider">
                             <th class="text-left py-3 font-medium">Time</th>
@@ -42,8 +42,10 @@
                             <th class="text-left py-3 font-medium">User agent</th>
                         </tr>
                     </thead>
-                    <tbody id="clicks-body"></tbody>
+                    <tbody id="clicks-body-desktop"></tbody>
                 </table>
+
+                <div id="clicks-body-mobile" class="sm:hidden divide-y divide-neutral-100"></div>
             </div>
         </div>
     </div>
@@ -83,14 +85,29 @@
             }
 
             document.getElementById('clicks-table').classList.remove('hidden');
-            const tbody = document.getElementById('clicks-body');
-            tbody.innerHTML = stats.recent_clicks.map(click => `
+
+            const desktopBody = document.getElementById('clicks-body-desktop');
+            desktopBody.innerHTML = stats.recent_clicks.map(click => `
                 <tr class="border-b border-neutral-100">
                     <td class="py-3 text-neutral-900 tabular-nums">${new Date(click.clicked_at).toLocaleString()}</td>
                     <td class="py-3 text-neutral-500 font-mono">${click.ip_address || '&mdash;'}</td>
                     <td class="py-3 text-neutral-500 max-w-xs truncate">${click.referer || 'direct'}</td>
                     <td class="py-3 text-neutral-400 max-w-xs truncate text-xs">${click.user_agent || '&mdash;'}</td>
                 </tr>
+            `).join('');
+
+            const mobileBody = document.getElementById('clicks-body-mobile');
+            mobileBody.innerHTML = stats.recent_clicks.map(click => `
+                <div class="py-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-sm text-neutral-900 tabular-nums">${new Date(click.clicked_at).toLocaleString()}</span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="text-xs text-neutral-500 font-mono">${click.ip_address || '&mdash;'}</span>
+                        <span class="text-xs text-neutral-400">${click.referer || 'direct'}</span>
+                    </div>
+                    <p class="text-xs text-neutral-400 truncate">${click.user_agent || '&mdash;'}</p>
+                </div>
             `).join('');
         } catch (e) {
             document.getElementById('stats-loading').textContent = 'Failed to load stats.';

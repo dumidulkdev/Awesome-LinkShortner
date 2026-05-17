@@ -3,27 +3,27 @@
 {% block title %}LinkShort &mdash; URL Shortener{% endblock %}
 
 {% block content %}
-<div class="mt-20 mb-32">
+<div class="mt-10 sm:mt-20 mb-16 sm:mb-32">
     <div class="max-w-xl">
-        <h1 class="text-4xl font-bold tracking-tight leading-tight mb-4">
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-4">
             Shorten links,<br>track clicks.
         </h1>
-        <p class="text-neutral-500 text-lg mb-10 leading-relaxed">
+        <p class="text-neutral-500 text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed">
             Paste a URL, get a short link. See who clicks it, when, and from where. No fluff.
         </p>
     </div>
 
     <div class="max-w-2xl">
-        <div class="flex gap-3 items-stretch">
+        <div class="flex flex-col sm:flex-row gap-3">
             <input
                 type="url"
                 id="url-input"
                 placeholder="https://your-long-url.com/something"
-                class="flex-1 px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors"
+                class="w-full sm:flex-1 px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors"
             >
             <button
                 onclick="shortenUrl()"
-                class="px-6 py-3 bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors shrink-0"
+                class="w-full sm:w-auto px-6 py-3 bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors shrink-0"
             >
                 Shorten
             </button>
@@ -32,8 +32,8 @@
         <div id="result" class="hidden mt-4 py-4 border-t border-neutral-200">
             <span class="text-xs text-neutral-400 uppercase tracking-wider">Your link</span>
             <div class="flex items-center gap-4 mt-2">
-                <a id="short-url" href="#" target="_blank" class="text-neutral-900 font-mono text-sm hover:underline underline-offset-4"></a>
-                <button onclick="copyUrl()" class="text-xs text-neutral-500 hover:text-neutral-900 border border-neutral-300 px-3 py-1 transition-colors">
+                <a id="short-url" href="#" target="_blank" class="text-neutral-900 font-mono text-sm hover:underline underline-offset-4 break-all"></a>
+                <button onclick="copyUrl()" class="text-xs text-neutral-500 hover:text-neutral-900 border border-neutral-300 px-3 py-1 transition-colors shrink-0">
                     copy
                 </button>
             </div>
@@ -43,8 +43,8 @@
     </div>
 </div>
 
-<div class="border-t border-neutral-200 pt-16 pb-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="border-t border-neutral-200 pt-10 sm:pt-16 pb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12">
         <div>
             <h3 class="text-sm font-semibold mb-2">Fast redirects</h3>
             <p class="text-sm text-neutral-500 leading-relaxed">Built on Rust. Redirects happen in single-digit milliseconds, even under heavy load.</p>
