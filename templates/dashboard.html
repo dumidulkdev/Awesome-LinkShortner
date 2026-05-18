@@ -3,75 +3,85 @@
 {% block title %}Dashboard &mdash; LinkShort{% endblock %}
 
 {% block content %}
-<div class="space-y-8 sm:space-y-10">
-    <div class="flex items-center justify-between">
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Your links</h1>
-        <button onclick="openCreateModal()" class="border border-neutral-900 px-3 sm:px-4 py-2 text-sm font-medium hover:bg-neutral-900 hover:text-white transition-colors">
-            New link
+<div class="space-y-0">
+
+    <div class="border-2 border-ink bg-paper p-5 sm:p-6 mb-6 flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-ink">Your links</h1>
+            <p class="text-mute text-sm mt-1">Manage and track all your short links.</p>
+        </div>
+        <button onclick="openCreateModal()" class="btn-solid px-5 py-2.5 text-sm">
+            + NEW LINK
         </button>
     </div>
 
-    <div id="create-modal" class="hidden border border-neutral-200 p-4 sm:p-6">
-        <h3 class="text-sm font-semibold mb-5">Create short link</h3>
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-2">URL</label>
-                <input type="url" id="new-url" placeholder="https://example.com/your-long-url" class="w-full px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors">
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div id="create-modal" class="hidden border-2 border-ink bg-paper mb-6">
+        <div class="p-5 sm:p-6">
+            <h3 class="text-lg font-bold text-ink mb-5">CREATE SHORT LINK</h3>
+            <div class="space-y-5">
                 <div>
-                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-2">Custom code</label>
-                    <input type="text" id="new-custom-code" placeholder="optional" class="w-full px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors">
+                    <label class="label-sm mb-2 block">Destination URL</label>
+                    <input type="url" id="new-url" placeholder="https://example.com/your-long-url" class="input-line w-full px-4 py-3.5 text-sm font-mono">
                 </div>
-                <div>
-                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-2">Title</label>
-                    <input type="text" id="new-title" placeholder="optional" class="w-full px-4 py-3 border border-neutral-300 text-sm placeholder-neutral-400 focus:border-neutral-900 transition-colors">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="label-sm mb-2 block">Custom code <span class="font-normal not-italic normal-case text-mute">(optional)</span></label>
+                        <input type="text" id="new-custom-code" placeholder="my-link" class="input-line w-full px-4 py-3.5 text-sm font-mono">
+                    </div>
+                    <div>
+                        <label class="label-sm mb-2 block">Title <span class="font-normal not-italic normal-case text-mute">(optional)</span></label>
+                        <input type="text" id="new-title" placeholder="Campaign name" class="input-line w-full px-4 py-3.5 text-sm">
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="createLink()" class="btn-solid px-6 py-2.5 text-sm">CREATE</button>
+                    <button onclick="closeCreateModal()" class="btn-ghost px-6 py-2.5 text-sm">CANCEL</button>
                 </div>
             </div>
-            <div class="flex gap-3 pt-2">
-                <button onclick="createLink()" class="px-5 py-2 bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors">Create</button>
-                <button onclick="closeCreateModal()" class="px-5 py-2 text-sm text-neutral-500 hover:text-neutral-900 transition-colors">Cancel</button>
-            </div>
+            <div id="create-error" class="hidden mt-5 border-2 border-accent bg-accent/5 px-5 py-4 text-sm font-medium text-accent"></div>
         </div>
-        <div id="create-error" class="hidden mt-4 text-sm text-red-600"></div>
     </div>
 
-    <div id="links-loading" class="text-sm text-neutral-400 py-16 text-center">Loading...</div>
-
-    <div id="links-empty" class="hidden py-16 text-center">
-        <p class="text-neutral-400 text-sm">No links yet. Create your first one.</p>
+    <div id="links-loading" class="flex items-center justify-center py-20">
+        <span class="text-sm font-mono text-mute">LOADING...</span>
     </div>
 
-    <div id="links-table" class="hidden">
+    <div id="links-empty" class="hidden text-center py-20 border-2 border-ink border-dashed bg-surface">
+        <p class="text-ink font-bold mb-2">NO LINKS YET</p>
+        <p class="text-mute text-sm mb-6">Create your first short link to get started.</p>
+        <button onclick="openCreateModal()" class="btn-solid px-6 py-2.5 text-sm inline-block">+ CREATE LINK</button>
+    </div>
+
+    <div id="links-table" class="hidden border-2 border-ink">
         <table class="w-full text-sm hidden sm:table">
             <thead>
-                <tr class="border-b border-neutral-200 text-neutral-500 text-xs uppercase tracking-wider">
-                    <th class="text-left py-3 font-medium">Code</th>
-                    <th class="text-left py-3 font-medium">Destination</th>
-                    <th class="text-left py-3 font-medium">Clicks</th>
-                    <th class="text-left py-3 font-medium">Created</th>
-                    <th class="text-right py-3 font-medium"></th>
+                <tr class="border-b-2 border-ink bg-surface">
+                    <th class="text-left py-4 px-5 label-sm">Code</th>
+                    <th class="text-left py-4 px-5 label-sm">Destination</th>
+                    <th class="text-left py-4 px-5 label-sm">Clicks</th>
+                    <th class="text-left py-4 px-5 label-sm">Created</th>
+                    <th class="text-right py-4 px-5 label-sm">Actions</th>
                 </tr>
             </thead>
             <tbody id="links-body-desktop"></tbody>
         </table>
 
-        <div id="links-body-mobile" class="sm:hidden space-y-0 divide-y divide-neutral-100"></div>
+        <div id="links-body-mobile" class="sm:hidden divide-y-2 divide-ink"></div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    const token = getToken();
+    var token = getToken();
     if (!token) window.location.href = '/login';
 
     loadLinks();
 
     async function loadLinks() {
         try {
-            const res = await fetch('/api/links', {
-                headers: { 'Authorization': `Bearer ${token}` }
+            var res = await fetch('/api/links', {
+                headers: { 'Authorization': 'Bearer ' + token }
             });
 
             if (res.status === 401) {
@@ -80,7 +90,7 @@
                 return;
             }
 
-            const links = await res.json();
+            var links = await res.json();
             document.getElementById('links-loading').classList.add('hidden');
 
             if (links.length === 0) {
@@ -90,50 +100,55 @@
 
             document.getElementById('links-table').classList.remove('hidden');
 
-            const desktopBody = document.getElementById('links-body-desktop');
-            desktopBody.innerHTML = links.map(link => `
-                <tr class="border-b border-neutral-100 group">
-                    <td class="py-4">
-                        <a href="/${link.short_code}" target="_blank" class="font-mono text-neutral-900 hover:underline underline-offset-4">${link.short_code}</a>
-                    </td>
-                    <td class="py-4 text-neutral-500 max-w-xs truncate pr-6">${link.original_url}</td>
-                    <td class="py-4">
-                        <a href="/stats/${link.id}" class="text-neutral-900 hover:underline underline-offset-4 tabular-nums">${link.click_count}</a>
-                    </td>
-                    <td class="py-4 text-neutral-400 tabular-nums">${new Date(link.created_at).toLocaleDateString()}</td>
-                    <td class="py-4 text-right">
-                        <span class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-3 justify-end">
-                            <button onclick="copyLink('${link.short_url}')" class="text-xs text-neutral-500 hover:text-neutral-900 transition-colors">copy</button>
-                            <button onclick="deleteLink('${link.id}')" class="text-xs text-red-500 hover:text-red-700 transition-colors">delete</button>
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
+            var desktopBody = document.getElementById('links-body-desktop');
+            desktopBody.innerHTML = links.map(function(link) {
+                var d = new Date(link.created_at);
+                var date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return '<tr class="border-b border-ink/15 hover:bg-surface transition-colors">' +
+                    '<td class="py-4 px-5">' +
+                        '<a href="/' + link.short_code + '" target="_blank" class="font-mono text-sm font-bold text-ink hover:text-accent transition-colors">' + link.short_code + '</a>' +
+                    '</td>' +
+                    '<td class="py-4 px-5 text-mute text-xs max-w-xs truncate pr-6 font-mono">' + link.original_url + '</td>' +
+                    '<td class="py-4 px-5">' +
+                        '<a href="/stats/' + link.id + '" class="font-bold text-ink hover:text-accent transition-colors tabular-nums">' + link.click_count + '</a>' +
+                    '</td>' +
+                    '<td class="py-4 px-5 text-mute text-xs tabular-nums">' + date + '</td>' +
+                    '<td class="py-4 px-5 text-right">' +
+                        '<span class="flex gap-4 justify-end">' +
+                            '<button onclick="copyLink(\'' + link.short_url + '\')" class="btn-ghost text-xs">COPY</button>' +
+                            '<button onclick="deleteLink(\'' + link.id + '\')" class="btn-danger text-xs">DELETE</button>' +
+                        '</span>' +
+                    '</td>' +
+                '</tr>';
+            }).join('');
 
-            const mobileBody = document.getElementById('links-body-mobile');
-            mobileBody.innerHTML = links.map(link => `
-                <div class="py-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <a href="/${link.short_code}" target="_blank" class="font-mono text-sm text-neutral-900 hover:underline underline-offset-4">${link.short_code}</a>
-                        <a href="/stats/${link.id}" class="text-xs text-neutral-500 tabular-nums">${link.click_count} clicks</a>
-                    </div>
-                    <p class="text-xs text-neutral-400 truncate mb-3">${link.original_url}</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-neutral-400 tabular-nums">${new Date(link.created_at).toLocaleDateString()}</span>
-                        <div class="flex gap-4">
-                            <button onclick="copyLink('${link.short_url}')" class="text-xs text-neutral-500 hover:text-neutral-900 transition-colors">copy</button>
-                            <button onclick="deleteLink('${link.id}')" class="text-xs text-red-500 hover:text-red-700 transition-colors">delete</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            var mobileBody = document.getElementById('links-body-mobile');
+            mobileBody.innerHTML = links.map(function(link) {
+                var d = new Date(link.created_at);
+                var date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return '<div class="p-4 bg-paper">' +
+                    '<div class="flex items-center justify-between mb-2">' +
+                        '<a href="/' + link.short_code + '" target="_blank" class="font-mono text-sm font-bold text-ink">' + link.short_code + '</a>' +
+                        '<a href="/stats/' + link.id + '" class="font-bold text-ink tabular-nums text-sm">' + link.click_count + ' clicks</a>' +
+                    '</div>' +
+                    '<p class="text-xs text-mute font-mono truncate mb-3">' + link.original_url + '</p>' +
+                    '<div class="flex items-center justify-between">' +
+                        '<span class="text-xs text-mute tabular-nums">' + date + '</span>' +
+                        '<div class="flex gap-4">' +
+                            '<button onclick="copyLink(\'' + link.short_url + '\')" class="btn-ghost text-xs">COPY</button>' +
+                            '<button onclick="deleteLink(\'' + link.id + '\')" class="btn-danger text-xs">DELETE</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
         } catch (e) {
-            document.getElementById('links-loading').textContent = 'Failed to load links.';
+            document.getElementById('links-loading').innerHTML = '<span class="text-sm font-mono text-accent">FAILED TO LOAD</span>';
         }
     }
 
     function openCreateModal() {
         document.getElementById('create-modal').classList.remove('hidden');
+        document.getElementById('new-url').focus();
     }
 
     function closeCreateModal() {
@@ -142,27 +157,33 @@
     }
 
     async function createLink() {
-        const url = document.getElementById('new-url').value.trim();
-        const customCode = document.getElementById('new-custom-code').value.trim();
-        const title = document.getElementById('new-title').value.trim();
-        const errorDiv = document.getElementById('create-error');
+        var url = document.getElementById('new-url').value.trim();
+        var customCode = document.getElementById('new-custom-code').value.trim();
+        var title = document.getElementById('new-title').value.trim();
+        var errorDiv = document.getElementById('create-error');
         errorDiv.classList.add('hidden');
 
-        const body = { url };
+        if (!url) {
+            errorDiv.textContent = 'Enter a URL.';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
+        var body = { url: url };
         if (customCode) body.custom_code = customCode;
         if (title) body.title = title;
 
         try {
-            const res = await fetch('/api/links', {
+            var res = await fetch('/api/links', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(body)
             });
 
-            const data = await res.json();
+            var data = await res.json();
 
             if (!res.ok) {
                 errorDiv.textContent = data.error;
@@ -174,6 +195,7 @@
             document.getElementById('new-url').value = '';
             document.getElementById('new-custom-code').value = '';
             document.getElementById('new-title').value = '';
+            showToast('LINK CREATED', 'success');
             loadLinks();
         } catch (e) {
             errorDiv.textContent = 'Network error.';
@@ -182,18 +204,20 @@
     }
 
     async function deleteLink(id) {
-        if (!confirm('Delete this link?')) return;
+        if (!confirm('Delete this link permanently?')) return;
 
-        await fetch(`/api/links/${id}`, {
+        await fetch('/api/links/' + id, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'Authorization': 'Bearer ' + token }
         });
 
+        showToast('DELETED');
         loadLinks();
     }
 
     function copyLink(url) {
         navigator.clipboard.writeText(url);
+        showToast('COPIED', 'success');
     }
 </script>
 {% endblock %}

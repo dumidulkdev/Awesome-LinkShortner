@@ -3,71 +3,92 @@
 {% block title %}LinkShort &mdash; URL Shortener{% endblock %}
 
 {% block content %}
-<div class="mt-10 sm:mt-20 mb-16 sm:mb-32">
-    <div class="max-w-xl">
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-4">
-            Shorten links,<br>track clicks.
+
+<section class="py-10 sm:py-16">
+    <div class="max-w-3xl">
+
+        <span class="label-sm mb-6 block">URL SHORTENER</span>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-ink mb-6">
+            Shorten links.
+            <br>
+            <span class="text-accent">Track everything.</span>
         </h1>
-        <p class="text-neutral-500 text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed">
-            Paste a URL, get a short link. See who clicks it, when, and from where. No fluff.
+
+        <p class="text-mute text-base sm:text-lg max-w-lg leading-relaxed mb-10">
+            Paste any URL. Get an instant short link. Every click is
+            logged&mdash;IP, referrer, device. No fluff.
         </p>
-    </div>
 
-    <div class="max-w-2xl">
-        <div class="flex flex-col sm:flex-row gap-3">
-            <input
-                type="url"
-                id="url-input"
-                placeholder="https://your-long-url.com/something"
-                class="w-full sm:flex-1 px-4 py-3 border border-neutral-300 text-sm font-mono placeholder-neutral-400 focus:border-neutral-900 transition-colors"
-            >
-            <button
-                onclick="shortenUrl()"
-                class="w-full sm:w-auto px-6 py-3 bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 transition-colors shrink-0"
-            >
-                Shorten
-            </button>
-        </div>
-
-        <div id="result" class="hidden mt-4 py-4 border-t border-neutral-200">
-            <span class="text-xs text-neutral-400 uppercase tracking-wider">Your link</span>
-            <div class="flex items-center gap-4 mt-2">
-                <a id="short-url" href="#" target="_blank" class="text-neutral-900 font-mono text-sm hover:underline underline-offset-4 break-all"></a>
-                <button onclick="copyUrl()" class="text-xs text-neutral-500 hover:text-neutral-900 border border-neutral-300 px-3 py-1 transition-colors shrink-0">
-                    copy
+        <div class="max-w-xl">
+            <div class="flex flex-col sm:flex-row gap-0 sm:gap-0">
+                <input
+                    type="url"
+                    id="url-input"
+                    placeholder="https://your-long-url.com/example"
+                    class="input-line flex-1 px-4 py-4 text-sm font-mono border-2 border-ink"
+                >
+                <button
+                    onclick="shortenUrl()"
+                    class="btn-solid px-8 py-4 text-sm border-2 border-ink sm:border-l-0"
+                >
+                    SHORTEN
                 </button>
             </div>
-        </div>
 
-        <div id="error" class="hidden mt-4 py-3 text-sm text-red-600"></div>
-    </div>
-</div>
+            <div id="result" class="hidden mt-0 border-2 border-ink border-t-0 bg-surface p-5">
+                <span class="label-sm mb-2 block">YOUR LINK</span>
+                <div class="flex items-center gap-4">
+                    <a id="short-url" href="#" target="_blank" class="text-ink font-mono text-sm font-bold break-all flex-1 underline-offset-4"></a>
+                    <button onclick="copyUrl()" class="btn-outline px-4 py-1.5 text-xs shrink-0">
+                        COPY
+                    </button>
+                </div>
+            </div>
 
-<div class="border-t border-neutral-200 pt-10 sm:pt-16 pb-8">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12">
-        <div>
-            <h3 class="text-sm font-semibold mb-2">Fast redirects</h3>
-            <p class="text-sm text-neutral-500 leading-relaxed">Built on Rust. Redirects happen in single-digit milliseconds, even under heavy load.</p>
-        </div>
-        <div>
-            <h3 class="text-sm font-semibold mb-2">Click analytics</h3>
-            <p class="text-sm text-neutral-500 leading-relaxed">Every click is logged with timestamp, referrer, and user agent. See it all on your dashboard.</p>
-        </div>
-        <div>
-            <h3 class="text-sm font-semibold mb-2">Custom codes</h3>
-            <p class="text-sm text-neutral-500 leading-relaxed">Pick your own short codes for branded links, or let us generate one for you.</p>
+            <div id="error" class="hidden mt-0 border-2 border-accent bg-accent/5 px-5 py-4 text-sm font-medium text-accent"></div>
         </div>
     </div>
-</div>
+</section>
+
+<div class="divider"></div>
+
+<section class="py-14 sm:py-20">
+    <span class="label-sm mb-8 block">WHY LINKSHORT</span>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-0">
+        <div class="border-2 border-ink p-6 sm:p-8 sm:border-r-0">
+            <span class="font-mono text-4xl font-bold text-ink mb-4 block">01</span>
+            <h3 class="font-bold text-lg text-ink mb-3">Blazing redirects</h3>
+            <p class="text-sm text-mute leading-relaxed">
+                Built on Rust and Axum. Redirects complete in single-digit milliseconds, even under heavy load.
+            </p>
+        </div>
+        <div class="border-2 border-ink p-6 sm:p-8 sm:border-r-0 sm:border-l-2">
+            <span class="font-mono text-4xl font-bold text-ink mb-4 block">02</span>
+            <h3 class="font-bold text-lg text-ink mb-3">Click analytics</h3>
+            <p class="text-sm text-mute leading-relaxed">
+                Every click logged with timestamp, IP, referrer, and user agent. Full dashboard with daily breakdowns.
+            </p>
+        </div>
+        <div class="border-2 border-ink p-6 sm:p-8 sm:border-l-2">
+            <span class="font-mono text-4xl font-bold text-ink mb-4 block">03</span>
+            <h3 class="font-bold text-lg text-ink mb-3">Custom codes</h3>
+            <p class="text-sm text-mute leading-relaxed">
+                Choose your own short code for branded links, or let us auto-generate one. Your links, your rules.
+            </p>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block scripts %}
 <script>
     async function shortenUrl() {
-        const url = document.getElementById('url-input').value.trim();
-        const resultDiv = document.getElementById('result');
-        const errorDiv = document.getElementById('error');
-        const shortUrlEl = document.getElementById('short-url');
+        var url = document.getElementById('url-input').value.trim();
+        var resultDiv = document.getElementById('result');
+        var errorDiv = document.getElementById('error');
+        var shortUrlEl = document.getElementById('short-url');
 
         resultDiv.classList.add('hidden');
         errorDiv.classList.add('hidden');
@@ -78,24 +99,24 @@
             return;
         }
 
-        const token = getToken();
+        var token = getToken();
         if (!token) {
-            errorDiv.innerHTML = 'You need to <a href="/login" class="underline">log in</a> first.';
+            errorDiv.innerHTML = 'You need to <a href="/login" class="underline font-bold">log in</a> first to create links.';
             errorDiv.classList.remove('hidden');
             return;
         }
 
         try {
-            const res = await fetch('/api/links', {
+            var res = await fetch('/api/links', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify({ url })
+                body: JSON.stringify({ url: url })
             });
 
-            const data = await res.json();
+            var data = await res.json();
 
             if (!res.ok) {
                 errorDiv.textContent = data.error || 'Something went wrong.';
@@ -113,8 +134,9 @@
     }
 
     function copyUrl() {
-        const url = document.getElementById('short-url').textContent;
+        var url = document.getElementById('short-url').textContent;
         navigator.clipboard.writeText(url);
+        showToast('COPIED', 'success');
     }
 </script>
 {% endblock %}

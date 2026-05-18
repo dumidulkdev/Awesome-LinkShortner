@@ -6,43 +6,180 @@
     <title>{% block title %}LinkShort{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 fontFamily: {
-                    sans: ['Poppins', 'sans-serif'],
-                    mono: ['JetBrains Mono', 'monospace'],
+                    sans: ['Space Grotesk', 'sans-serif'],
+                    mono: ['Space Mono', 'monospace'],
                 },
-                extend: {}
+                extend: {
+                    colors: {
+                        ink: '#0D0D0D',
+                        paper: '#F7F6F3',
+                        surface: '#EEECE7',
+                        mute: '#8C8A85',
+                        accent: '#E83A2D',
+                        signal: '#1B8057',
+                    }
+                }
             }
         }
     </script>
     <style>
-        * { -webkit-font-smoothing: antialiased; }
-        ::selection { background: #000; color: #fff; }
-        input:focus { outline: none; }
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        ::selection {
+            background: #0D0D0D;
+            color: #F7F6F3;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+        }
+
+        .input-line {
+            border: 2px solid #0D0D0D;
+            border-radius: 0;
+            background: #F7F6F3;
+            transition: background 0.12s;
+        }
+        .input-line:focus {
+            background: #EEECE7;
+        }
+        .input-line::placeholder {
+            color: #8C8A85;
+            font-style: italic;
+        }
+
+        .btn-solid {
+            border: 2px solid #0D0D0D;
+            border-radius: 0;
+            background: #0D0D0D;
+            color: #F7F6F3;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: background 0.12s, color 0.12s;
+            cursor: pointer;
+        }
+        .btn-solid:hover {
+            background: #E83A2D;
+            border-color: #E83A2D;
+            color: #F7F6F3;
+        }
+        .btn-outline {
+            border: 2px solid #0D0D0D;
+            border-radius: 0;
+            background: transparent;
+            color: #0D0D0D;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: background 0.12s, color 0.12s;
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            background: #0D0D0D;
+            color: #F7F6F3;
+        }
+        .btn-ghost {
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: #8C8A85;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: color 0.12s;
+            text-underline-offset: 4px;
+        }
+        .btn-ghost:hover {
+            color: #0D0D0D;
+            text-decoration: underline;
+        }
+        .btn-danger {
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: #8C8A85;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: color 0.12s;
+        }
+        .btn-danger:hover {
+            color: #E83A2D;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid #0D0D0D;
+            margin: 0;
+        }
+
+        .label-sm {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8C8A85;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 14px 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #F7F6F3;
+            background: #0D0D0D;
+            border: 2px solid #0D0D0D;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success { background: #1B8057; border-color: #1B8057; color: #F7F6F3; }
+        .toast.error { background: #E83A2D; border-color: #E83A2D; color: #F7F6F3; }
     </style>
 </head>
-<body class="bg-white min-h-screen text-neutral-900 font-sans">
+<body class="bg-paper min-h-screen text-ink font-sans">
 
-    <nav class="border-b border-neutral-200 px-4 sm:px-6 py-4 sm:py-5">
-        <div class="max-w-5xl mx-auto flex items-center justify-between">
-            <a href="/" class="text-lg font-semibold tracking-tight">linkshort</a>
-            <div id="nav-links" class="flex items-center gap-4 sm:gap-6 text-sm"></div>
+    <nav class="border-b-2 border-ink bg-paper sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3">
+                <span class="text-lg font-bold tracking-tight text-ink">LINKSHORT</span>
+            </a>
+            <div id="nav-links" class="flex items-center gap-5 sm:gap-8 text-sm font-medium"></div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-neutral-200 px-4 sm:px-6 py-6 mt-12 sm:mt-20">
-        <div class="max-w-5xl mx-auto text-xs text-neutral-400">
-            linkshort &mdash; built with rust
+    <footer class="border-t-2 border-ink bg-surface mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <span class="text-xs font-mono text-mute">LINKSHORT</span>
+            <div class="flex items-center gap-6 text-xs font-mono text-mute">
+                <span>FAST</span>
+                <span>ANALYTICS</span>
+                <span>CUSTOM</span>
+            </div>
         </div>
     </footer>
+
+    <div id="toast" class="toast"></div>
 
     <script>
         function getToken() {
@@ -50,18 +187,13 @@
         }
 
         (function() {
-            const nav = document.getElementById('nav-links');
-
+            var nav = document.getElementById('nav-links');
             if (getToken()) {
-                nav.innerHTML = `
-                    <a href="/dashboard" class="text-neutral-500 hover:text-neutral-900 transition-colors">dashboard</a>
-                    <button onclick="logout()" class="text-neutral-500 hover:text-neutral-900 transition-colors">logout</button>
-                `;
+                nav.innerHTML = '<a href="/dashboard" class="text-ink hover:text-accent transition-colors font-medium">DASHBOARD</a>' +
+                    '<button onclick="logout()" class="text-mute hover:text-ink transition-colors font-medium">LOG OUT</button>';
             } else {
-                nav.innerHTML = `
-                    <a href="/login" class="text-neutral-500 hover:text-neutral-900 transition-colors">login</a>
-                    <a href="/register" class="border border-neutral-900 px-3 sm:px-4 py-1.5 text-neutral-900 hover:bg-neutral-900 hover:text-white transition-colors text-sm">sign up</a>
-                `;
+                nav.innerHTML = '<a href="/login" class="text-ink hover:text-accent transition-colors font-medium">LOG IN</a>' +
+                    '<a href="/register" class="btn-solid px-4 py-1.5 text-sm">SIGN UP</a>';
             }
         })();
 
@@ -69,6 +201,19 @@
             localStorage.removeItem('token');
             localStorage.removeItem('email');
             window.location.href = '/';
+        }
+
+        function showToast(message, type) {
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + (type || '');
+            requestAnimationFrame(function() {
+                toast.classList.add('show');
+            });
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2200);
         }
     </script>
 
